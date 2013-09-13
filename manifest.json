@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "Divebar",
+  "description": "This extension adds scrolling when window is partially off screen.",
+  "version": "1.0",
+
+  "permissions": [
+    "activeTab"
+  ], 
+  "content_scripts": [
+    {
+     "matches": [
+        "<all_urls>"
+     ],
+     "js": ["jquery-2.0.3.js", "divebar.js"]
+    }
+  ]
+}
