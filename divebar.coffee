@@ -1,9 +1,6 @@
 Divebar = ->
   window.chrome ?={}
   
-
-
-
   SCRNH = window.screen.height
   SCRNW = window.screen.width
   
