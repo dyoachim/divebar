@@ -4,6 +4,7 @@
   "name": "Divebar",
   "description": "This extension adds scrolling when window is partially off screen.",
   "version": "1.0",
+  "options_page": "options.html",
 
   "permissions": [
     "activeTab"
