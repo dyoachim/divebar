@@ -21,7 +21,7 @@ Divebar = ->
     t = x + w
     u = DUALX + DUALW
     
-    if (TYPE == "single")
+    if (TYPE == "unchecked")
       if (t > SCRNW)
         padding[0] = (t - SCRNW)
       else
@@ -36,62 +36,60 @@ Divebar = ->
         padding[2] = (-x)
       else
         padding[2] = 0
+    else if (TYPE == "checked")
+      if ( DUALX == -DUALW)
+        if (t > SCRNW)
+          padding[0] = (t - SCRNW)
+        else
+          padding[0] = 0
 
-    if (TYPE == "left")
-      if (t > SCRNW)
-        padding[0] = (t - SCRNW)
-      else
-        padding[0] = 0
+        if (p > SCRNH) && (x > 0)
+          padding[1] = p - SCRNH
+        else if (t < 0) && (p > r)
+          padding[1] = p - r
+        else
+          padding[1] = 0
+        
+        if (x < (-DUALW))
+          padding[2] = (-x) - DUALW
+        else
+          padding[2] = 0
+      else if (DUALX == SCRNW)
+        if (t > (SCRNW + DUALW))
+          padding[0] = t - (SCRNW + DUALW)
+        else
+          padding[0] = 0
 
-      if (p > SCRNH) && (x > 0)
-        padding[1] = p - SCRNH
-      else if (t < 0) && (p > r)
-        padding[1] = p - r
+        if (p > SCRNH) && (t < SCRNW)
+          padding[1] = p - SCRNH
+        else if (p > r) && (x > SCRNW)
+          padding[1] = p - r
+        else
+          padding[1] = 0
+        
+        if (x < 0)
+          padding[2] = -x
+        else
+          padding[2] = 0
       else
-        padding[1] = 0
-      
-      if (x < (-DUALW))
-        padding[2] = (-x) - DUALW
-      else
-        padding[2] = 0
+        if (t > SCRNW) && (p < SCRNH)
+          padding[0] = t - SCRNW
+        else if (y > SCRNH) && (t > u)
+          padding[0] = t - u
+        else
+          padding[0] = 0
 
-    if (TYPE == "right")
-      if (t > (SCRNW + DUALW))
-        padding[0] = t - (SCRNW + DUALW)
-      else
-        padding[0] = 0
+        if (p > (SCRNH + DUALH))
+          padding[1] = p - (SCRNH + DUALH)
+        else
+          padding[1] = 0
 
-      if (p > SCRNH) && (t < SCRNW)
-        padding[1] = p - SCRNH
-      else if (p > r) && (x > SCRNW)
-        padding[1] = p - r
-      else
-        padding[1] = 0
-      
-      if (x < 0)
-        padding[2] = -x
-      else
-        padding[2] = 0
-
-    if (TYPE == "below")
-      if (t > SCRNW) && (p < SCRNH)
-        padding[0] = t - SCRNW
-      else if (y > SCRNH) && (t > u)
-        padding[0] = t - u
-      else
-        padding[0] = 0
-
-      if (p > (SCRNH + DUALH))
-        padding[1] = p - (SCRNH + DUALH)
-      else
-        padding[1] = 0
-
-      if (x < 0) && (p < SCRNH)
-        padding[2] = -x
-      else if (y > SCRNH) && (x < DUALX)
-        padding[2] = DUALX - x
-      else
-        padding[2] = 0
+        if (x < 0) && (p < SCRNH)
+          padding[2] = -x
+        else if (y > SCRNH) && (x < DUALX)
+          padding[2] = DUALX - x
+        else
+          padding[2] = 0
 
     return padding
 

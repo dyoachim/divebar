@@ -2,27 +2,21 @@ function dualCheck_options() {
   var dualBox = document.getElementById('dualCheck')
 
   if (dualBox.checked) {
-    localStorage.setItem("TYPE", "left");
-    console.log('checked');
+    localStorage.setItem("TYPE", 'checked');
   }
   else {
-    localStorage.setItem("TYPE", 'single');
-    console.log('unchecked');
+    localStorage.setItem("TYPE", 'unchecked');
   }
+}
 
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status4");
-  if (dualBox.checked) {
-    status.innerHTML = "Please save orientation and calibrate.";
-    setTimeout(function() {
-      status.innerHTML = "";
-    }, 750);
+function showMe() {
+  var chkbox = document.getElementById("dualCheck")
+  var divbox = document.getElementById("dualOptions")
+  if(chkbox.checked == true) {
+          divbox.style.display = "";
   }
   else {
-    status.innerHTML = "Single Monitor Mode.";
-    setTimeout(function() {
-      status.innerHTML = "";
-    }, 750);
+          divbox.style.display = "none";
   }
 }
 
@@ -37,30 +31,31 @@ function calibrate_options() {
   localStorage.setItem("DUALY", y);
 
   // Update status to let user know options were saved.
-  var status = document.getElementById("status2");
+  var status = document.getElementById("status");
   status.innerHTML = "Calibrated.";
   setTimeout(function() {
     status.innerHTML = "";
   }, 750);
 }
 
-// Saves options to localStorage.
-function monitor_options() {
-  var select = document.getElementById("monitors");
-  var monitor = select.children[select.selectedIndex].value;
-  localStorage.setItem("TYPE", monitor);
+function restore_settings(){
+  var dualBox = document.getElementById('dualCheck')
+  var divbox = document.getElementById("dualOptions")
 
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status3");
-  status.innerHTML = "Monitor Status Saved." + monitor;
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 750);
+  if (localStorage.getItem("TYPE") == "checked") {
+    dualBox.checked = true;
+    divbox.style.display = "";
+  }
+  else {
+    dualBox.checked = false;
+    divbox.style.display = "none";
+  }
 }
 
+document.addEventListener('DOMContentLoaded', restore_settings);
 document.querySelector('#dualCheck').addEventListener('click', dualCheck_options);
+document.querySelector('#dualCheck').addEventListener('click', showMe);
 document.querySelector('#calibrate').addEventListener('click', calibrate_options);
-document.querySelector('#calibrate').addEventListener('click', monitor_options);
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log(sender.tab ?

@@ -1,24 +1,21 @@
 <html>
-<head><title>Divebar Options</title></head>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Divebar Options</title>
+</head>
 
 <body>
 
 	<form><input type="checkbox" id="dualCheck">Dual Monitors</form>
-	<div id="status4"></div>
+	
 	<br>
 
-	<p>If using dual monitors, select orientation. Then fullscreen this window on the second monitor and press Calibrate.</p>
-	<select id="monitors">
-	 <option value="left">left</option>
-	 <option value="right">right</option>
-	 <option value="below">below</option>
-	</select>
-
-	<br>
-	<div id="status3"></div>
-	<br>
-	<div id="status2"></div>
-	<button id="calibrate">Calibrate</button>
+	<div id="dualOptions">
+		<p>Please fullscreen this window on the second monitor and press Calibrate.</p>
+		<br>
+		<div id="status"></div>
+		<button id="calibrate">Calibrate</button>	
+	</div>
 </body>
 
 <script src="options.js"></script>

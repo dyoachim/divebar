@@ -1,0 +1,15 @@
+form {
+	padding-top: 40px;
+	padding-left: 30px;
+}
+
+body {
+	background-color: #CDCDCD
+}
+
+#dualOptions {
+	width: 400px;
+	margin: 0 auto;
+	margin-top: 80px;
+	text-align: center;
+}
