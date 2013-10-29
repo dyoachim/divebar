@@ -3,16 +3,26 @@
   var Divebar;
 
   Divebar = function() {
-    var DUALH, DUALW, DUALX, DUALY, SCRNH, SCRNW, TYPE, appendPadding, getCoordinates;
+    var BASEH, BASEW, DUALH, DUALW, DUALX, DUALY, SCRNH, SCRNW, TYPE, appendPadding, getCoordinates;
     if (window.chrome == null) {
       window.chrome = {};
     }
-    SCRNH = window.screen.height;
     SCRNW = window.screen.width;
+    SCRNH = window.screen.height;
     TYPE = chrome.runtime.sendMessage({
       greeting: "getTYPE"
     }, function(response) {
       return TYPE = response.TYPE;
+    });
+    BASEW = chrome.runtime.sendMessage({
+      greeting: "getBASEW"
+    }, function(response) {
+      return BASEW = parseInt(response.BASEW);
+    });
+    BASEH = chrome.runtime.sendMessage({
+      greeting: "getBASEH"
+    }, function(response) {
+      return BASEH = parseInt(response.BASEH);
     });
     DUALW = chrome.runtime.sendMessage({
       greeting: "getDUALW"
@@ -35,13 +45,13 @@
       return DUALY = parseInt(response.DUALY);
     });
     $(function() {
-      return $('body > *').wrapAll("<div id='dive-div' />");
+      return $('body > *').wrapAll("<article id='dive-div' />");
     });
     $(function() {
       return $('#dive-div').css('position', "relative");
     });
     $(function() {
-      return $('#dive-div').wrapAll("<div id='dive-div2' />");
+      return $('#dive-div').wrapAll("<article id='dive-div2' />");
     });
     getCoordinates = function(x, y, w, h) {
       var p, padding, r, t, u;
@@ -68,13 +78,13 @@
         }
       } else if (TYPE === "checked") {
         if (DUALX === -DUALW) {
-          if (t > SCRNW) {
-            padding[0] = t - SCRNW;
+          if (t > BASEW) {
+            padding[0] = t - BASEW;
           } else {
             padding[0] = 0;
           }
-          if ((p > SCRNH) && (x > 0)) {
-            padding[1] = p - SCRNH;
+          if ((p > BASEH) && (x > 0)) {
+            padding[1] = p - BASEH;
           } else if ((t < 0) && (p > r)) {
             padding[1] = p - r;
           } else {
@@ -85,15 +95,15 @@
           } else {
             padding[2] = 0;
           }
-        } else if (DUALX === SCRNW) {
-          if (t > (SCRNW + DUALW)) {
-            padding[0] = t - (SCRNW + DUALW);
+        } else if (DUALX === BASEW) {
+          if (t > (BASEW + DUALW)) {
+            padding[0] = t - (BASEW + DUALW);
           } else {
             padding[0] = 0;
           }
-          if ((p > SCRNH) && (t < SCRNW)) {
-            padding[1] = p - SCRNH;
-          } else if ((p > r) && (x > SCRNW)) {
+          if ((p > BASEH) && (t < BASEW)) {
+            padding[1] = p - BASEH;
+          } else if ((p > r) && (x > BASEW)) {
             padding[1] = p - r;
           } else {
             padding[1] = 0;
@@ -104,21 +114,21 @@
             padding[2] = 0;
           }
         } else {
-          if ((t > SCRNW) && (p < SCRNH)) {
-            padding[0] = t - SCRNW;
-          } else if ((y > SCRNH) && (t > u)) {
+          if ((t > BASEW) && (p < BASEH)) {
+            padding[0] = t - BASEW;
+          } else if ((y > BASEH) && (t > u)) {
             padding[0] = t - u;
           } else {
             padding[0] = 0;
           }
-          if (p > (SCRNH + DUALH)) {
-            padding[1] = p - (SCRNH + DUALH);
+          if (p > (BASEH + DUALH)) {
+            padding[1] = p - (BASEH + DUALH);
           } else {
             padding[1] = 0;
           }
-          if ((x < 0) && (p < SCRNH)) {
+          if ((x < 0) && (p < BASEH)) {
             padding[2] = -x;
-          } else if ((y > SCRNH) && (x < DUALX)) {
+          } else if ((y > BASEH) && (x < DUALX)) {
             padding[2] = DUALX - x;
           } else {
             padding[2] = 0;

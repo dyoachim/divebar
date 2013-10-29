@@ -20,7 +20,7 @@ function showMe() {
   }
 }
 
-function calibrate_options() {
+function calibrate_dual_options() {
   var w = window.screen.width
   var h = window.screen.height
   var x = window.screenLeft
@@ -31,8 +31,22 @@ function calibrate_options() {
   localStorage.setItem("DUALY", y);
 
   // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Calibrated.";
+  var status = document.getElementById("status_dual");
+  status.innerHTML = "Secondary monitor calibrated.";
+  setTimeout(function() {
+    status.innerHTML = "";
+  }, 750);
+}
+
+function calibrate_base_options() {
+  w = window.screen.width
+  h = window.screen.height
+  localStorage.setItem("BASEW", w);
+  localStorage.setItem("BASEH", h);
+
+  // Update status to let user know options were saved.
+  var status = document.getElementById("status_base");
+  status.innerHTML = "Primary monitor calibrated.";
   setTimeout(function() {
     status.innerHTML = "";
   }, 750);
@@ -55,12 +69,17 @@ function restore_settings(){
 document.addEventListener('DOMContentLoaded', restore_settings);
 document.querySelector('#dualCheck').addEventListener('click', dualCheck_options);
 document.querySelector('#dualCheck').addEventListener('click', showMe);
-document.querySelector('#calibrate').addEventListener('click', calibrate_options);
+document.querySelector('#calibrate_base').addEventListener('click', calibrate_base_options);
+document.querySelector('#calibrate_dual').addEventListener('click', calibrate_dual_options);
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log(sender.tab ?
                 "from a content script:" + sender.tab.url :
                 "from the extension");
+    if (request.greeting == "getBASEW")
+      sendResponse({BASEW: localStorage.getItem('BASEW')});
+    if (request.greeting == "getBASEH")
+      sendResponse({BASEH: localStorage.getItem('BASEH')});
     if (request.greeting == "getDUALW")
       sendResponse({DUALW: localStorage.getItem('DUALW')});
     if (request.greeting == "getDUALH")
@@ -70,5 +89,7 @@ chrome.runtime.onMessage.addListener(
     if (request.greeting == "getDUALY")
       sendResponse({DUALY: localStorage.getItem('DUALY')});
     if (request.greeting == "getTYPE")
+      if (localStorage.getItem('TYPE') == undefined)
+        localStorage.setItem("TYPE", 'unchecked');
       sendResponse({TYPE: localStorage.getItem('TYPE')});
   });

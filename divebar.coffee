@@ -1,18 +1,20 @@
 Divebar = ->
   window.chrome ?={}
   
-  SCRNH = window.screen.height
   SCRNW = window.screen.width
-  
+  SCRNH = window.screen.height
+
   TYPE  = chrome.runtime.sendMessage {greeting:"getTYPE"}, (response) -> TYPE  = response.TYPE
+  BASEW = chrome.runtime.sendMessage {greeting:"getBASEW"},(response) -> BASEW = parseInt(response.BASEW)
+  BASEH = chrome.runtime.sendMessage {greeting:"getBASEH"},(response) -> BASEH = parseInt(response.BASEH)
   DUALW = chrome.runtime.sendMessage {greeting:"getDUALW"},(response) -> DUALW = parseInt(response.DUALW)
   DUALH = chrome.runtime.sendMessage {greeting:"getDUALH"},(response) -> DUALH = parseInt(response.DUALH)
   DUALX = chrome.runtime.sendMessage {greeting:"getDUALX"},(response) -> DUALX = parseInt(response.DUALX)
   DUALY = chrome.runtime.sendMessage {greeting:"getDUALY"},(response) -> DUALY = parseInt(response.DUALY)
 
-  $ -> $('body > *').wrapAll("<div id='dive-div' />")
+  $ -> $('body > *').wrapAll("<article id='dive-div' />")
   $ -> $('#dive-div').css('position', "relative")
-  $ -> $('#dive-div').wrapAll("<div id='dive-div2' />")
+  $ -> $('#dive-div').wrapAll("<article id='dive-div2' />")
 
   getCoordinates = (x, y, w, h) -> 
     padding = []
@@ -38,13 +40,13 @@ Divebar = ->
         padding[2] = 0
     else if (TYPE == "checked")
       if ( DUALX == -DUALW)
-        if (t > SCRNW)
-          padding[0] = (t - SCRNW)
+        if (t > BASEW)
+          padding[0] = (t - BASEW)
         else
           padding[0] = 0
 
-        if (p > SCRNH) && (x > 0)
-          padding[1] = p - SCRNH
+        if (p > BASEH) && (x > 0)
+          padding[1] = p - BASEH
         else if (t < 0) && (p > r)
           padding[1] = p - r
         else
@@ -54,15 +56,15 @@ Divebar = ->
           padding[2] = (-x) - DUALW
         else
           padding[2] = 0
-      else if (DUALX == SCRNW)
-        if (t > (SCRNW + DUALW))
-          padding[0] = t - (SCRNW + DUALW)
+      else if (DUALX == BASEW)
+        if (t > (BASEW + DUALW))
+          padding[0] = t - (BASEW + DUALW)
         else
           padding[0] = 0
 
-        if (p > SCRNH) && (t < SCRNW)
-          padding[1] = p - SCRNH
-        else if (p > r) && (x > SCRNW)
+        if (p > BASEH) && (t < BASEW)
+          padding[1] = p - BASEH
+        else if (p > r) && (x > BASEW)
           padding[1] = p - r
         else
           padding[1] = 0
@@ -72,21 +74,21 @@ Divebar = ->
         else
           padding[2] = 0
       else
-        if (t > SCRNW) && (p < SCRNH)
-          padding[0] = t - SCRNW
-        else if (y > SCRNH) && (t > u)
+        if (t > BASEW) && (p < BASEH)
+          padding[0] = t - BASEW
+        else if (y > BASEH) && (t > u)
           padding[0] = t - u
         else
           padding[0] = 0
 
-        if (p > (SCRNH + DUALH))
-          padding[1] = p - (SCRNH + DUALH)
+        if (p > (BASEH + DUALH))
+          padding[1] = p - (BASEH + DUALH)
         else
           padding[1] = 0
 
-        if (x < 0) && (p < SCRNH)
+        if (x < 0) && (p < BASEH)
           padding[2] = -x
-        else if (y > SCRNH) && (x < DUALX)
+        else if (y > BASEH) && (x < DUALX)
           padding[2] = DUALX - x
         else
           padding[2] = 0
