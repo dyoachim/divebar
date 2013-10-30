@@ -89,7 +89,5 @@ chrome.runtime.onMessage.addListener(
     if (request.greeting == "getDUALY")
       sendResponse({DUALY: localStorage.getItem('DUALY')});
     if (request.greeting == "getTYPE")
-      if (localStorage.getItem('TYPE') == undefined)
-        localStorage.setItem("TYPE", 'unchecked');
       sendResponse({TYPE: localStorage.getItem('TYPE')});
   });
