@@ -3,10 +3,11 @@
   var Divebar;
 
   Divebar = function() {
-    var BASEH, BASEW, DUALH, DUALW, DUALX, DUALY, SCRNH, SCRNW, TYPE, appendPadding, getCoordinates;
+    var BASEH, BASEW, DUALH, DUALW, DUALX, DUALY, SCRNH, SCRNW, TYPE, appendPadding, getCoordinates, wrapped;
     if (window.chrome == null) {
       window.chrome = {};
     }
+    wrapped = false;
     SCRNW = window.screen.width;
     SCRNH = window.screen.height;
     TYPE = chrome.runtime.sendMessage({
@@ -46,15 +47,6 @@
       greeting: "getDUALY"
     }, function(response) {
       return DUALY = parseInt(response.DUALY);
-    });
-    $(function() {
-      return $('body > *').wrapAll("<div id='dive-div' />");
-    });
-    $(function() {
-      return $('#dive-div').css('position', "relative");
-    });
-    $(function() {
-      return $('#dive-div').wrapAll("<div id='dive-div2' />");
     });
     getCoordinates = function(x, y, w, h) {
       var C, bottom, left, p, r, right, t, u;
@@ -115,12 +107,23 @@
     };
     appendPadding = function(padding) {
       var DIV;
-      DIV = $('#dive-div2');
-      DIV.css('width', '100%');
-      DIV.css('positon', 'relative');
-      DIV.css('padding-right', padding[0] + "px");
-      DIV.css('padding-bottom', padding[1] + "px");
-      return DIV.css('padding-left', padding[2] + "px");
+      if (padding[0] === 0 && padding[1] === 0 && padding[2] === 0) {
+        if (wrapped === true) {
+          $("#dive-div").unwrap();
+          $("#dive-div > *").unwrap();
+          return wrapped = false;
+        }
+      } else {
+        if (wrapped === false) {
+          $('body > *').wrapAll("<div id='dive-div' style='position:relative' />");
+          $('#dive-div').wrapAll("<div id='dive-div2' style='position:relative; width:100%' />");
+          wrapped = true;
+        }
+        DIV = $('#dive-div2');
+        DIV.css('padding-right', padding[0] + "px");
+        DIV.css('padding-bottom', padding[1] + "px");
+        return DIV.css('padding-left', padding[2] + "px");
+      }
     };
     return setInterval(function() {
       var h, w, x, y;

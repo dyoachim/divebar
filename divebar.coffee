@@ -1,5 +1,6 @@
 Divebar = ->
   window.chrome ?={}
+  wrapped = false
   
   SCRNW = window.screen.width
   SCRNH = window.screen.height
@@ -11,10 +12,6 @@ Divebar = ->
   DUALH = chrome.runtime.sendMessage {greeting:"getDUALH"},(response) -> DUALH = parseInt(response.DUALH)
   DUALX = chrome.runtime.sendMessage {greeting:"getDUALX"},(response) -> DUALX = parseInt(response.DUALX)
   DUALY = chrome.runtime.sendMessage {greeting:"getDUALY"},(response) -> DUALY = parseInt(response.DUALY)
-
-  $ -> $('body > *').wrapAll("<div id='dive-div' />")
-  $ -> $('#dive-div').css('position', "relative")
-  $ -> $('#dive-div').wrapAll("<div id='dive-div2' />")
 
   getCoordinates = (x, y, w, h) -> 
     C = []
@@ -71,13 +68,21 @@ Divebar = ->
 
     return C
 
-  appendPadding = (padding) ->   
-    DIV = $('#dive-div2')
-    DIV.css('width', '100%')
-    DIV.css('positon', 'relative')
-    DIV.css('padding-right',  padding[0] + "px")
-    DIV.css('padding-bottom', padding[1] + "px")
-    DIV.css('padding-left',   padding[2] + "px")
+  appendPadding = (padding) ->
+    if padding[0] == 0 && padding[1] == 0 && padding[2] == 0
+      if wrapped == true
+        $("#dive-div").unwrap()
+        $("#dive-div > *").unwrap()
+        wrapped = false
+    else
+      if wrapped == false
+        $('body > *').wrapAll("<div id='dive-div' style='position:relative' />")
+        $('#dive-div').wrapAll("<div id='dive-div2' style='position:relative; width:100%' />")
+        wrapped = true
+      DIV = $('#dive-div2')
+      DIV.css('padding-right',  padding[0] + "px")
+      DIV.css('padding-bottom', padding[1] + "px")
+      DIV.css('padding-left',   padding[2] + "px")
 
   setInterval ->
     if ( x != window.screenLeft || y != window.screenTop )
