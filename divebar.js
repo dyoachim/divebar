@@ -3,53 +3,39 @@
   var Divebar;
 
   Divebar = function() {
-    var BASEH, BASEW, DUALH, DUALW, DUALX, DUALY, SCRNH, SCRNW, TYPE, appendPadding, getCoordinates, wrapped;
+    var SCRNH, SCRNW, appendPadding, dualMode, dualNums, getCoordinates, wrapped, x, y;
     if (window.chrome == null) {
       window.chrome = {};
     }
     wrapped = false;
+    x = 0;
+    y = 0;
     SCRNW = window.screen.width;
     SCRNH = window.screen.height;
-    TYPE = chrome.runtime.sendMessage({
-      greeting: "getTYPE"
+    dualMode = chrome.runtime.sendMessage({
+      greeting: "checkDualMode"
     }, function(response) {
-      return TYPE = response.TYPE;
+      return dualMode = response.dualMode;
     });
-    if (TYPE == null) {
-      TYPE = "unchecked";
+    if (dualMode == null) {
+      dualMode = "unchecked";
     }
-    BASEW = chrome.runtime.sendMessage({
-      greeting: "getBASEW"
+    dualNums = chrome.runtime.sendMessage({
+      greeting: "getDualNums"
     }, function(response) {
-      return BASEW = parseInt(response.BASEW);
+      return dualNums = response.dualNums;
     });
-    BASEH = chrome.runtime.sendMessage({
-      greeting: "getBASEH"
-    }, function(response) {
-      return BASEH = parseInt(response.BASEH);
-    });
-    DUALW = chrome.runtime.sendMessage({
-      greeting: "getDUALW"
-    }, function(response) {
-      return DUALW = parseInt(response.DUALW);
-    });
-    DUALH = chrome.runtime.sendMessage({
-      greeting: "getDUALH"
-    }, function(response) {
-      return DUALH = parseInt(response.DUALH);
-    });
-    DUALX = chrome.runtime.sendMessage({
-      greeting: "getDUALX"
-    }, function(response) {
-      return DUALX = parseInt(response.DUALX);
-    });
-    DUALY = chrome.runtime.sendMessage({
-      greeting: "getDUALY"
-    }, function(response) {
-      return DUALY = parseInt(response.DUALY);
-    });
+    if (dualNums == null) {
+      dualNums = [SCRNW, SCRNH, 0, 0, 0, 0];
+    }
     getCoordinates = function(x, y, w, h) {
-      var C, bottom, left, p, r, right, t, u;
+      var BASEH, BASEW, C, DUALH, DUALW, DUALX, DUALY, bottom, left, p, r, right, t, u;
+      BASEW = parseInt(dualNums[0]);
+      BASEH = parseInt(dualNums[1]);
+      DUALW = parseInt(dualNums[2]);
+      DUALH = parseInt(dualNums[3]);
+      DUALX = parseInt(dualNums[4]);
+      DUALY = parseInt(dualNums[5]);
       C = [];
       p = y + h;
       r = DUALY + DUALH;
@@ -58,7 +44,7 @@
       left = DUALX === -DUALW;
       right = DUALX === BASEW;
       bottom = DUALY === BASEH;
-      if (TYPE === "unchecked") {
+      if (dualMode === "unchecked") {
         if (t > SCRNW) {
           C[0] = t - SCRNW;
         } else {
@@ -74,7 +60,7 @@
         } else {
           C[2] = 0;
         }
-      } else if (TYPE === "checked") {
+      } else if (dualMode === "checked") {
         if (t > BASEW && (left || (p < BASEH && bottom))) {
           C[0] = t - BASEW;
         } else if (t > (BASEW + DUALW) && right) {
@@ -122,11 +108,12 @@
         DIV = $('#dive-div2');
         DIV.css('padding-right', padding[0] + "px");
         DIV.css('padding-bottom', padding[1] + "px");
-        return DIV.css('padding-left', padding[2] + "px");
+        DIV.css('padding-left', padding[2] + "px");
+        return window.scrollBy(padding[2], 0);
       }
     };
     return setInterval(function() {
-      var h, w, x, y;
+      var h, w;
       if (x !== window.screenLeft || y !== window.screenTop) {
         x = window.screenLeft;
         y = window.screenTop;

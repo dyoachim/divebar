@@ -1,19 +1,27 @@
 Divebar = ->
   window.chrome ?={}
   wrapped = false
+  x = 0
+  y = 0
   
   SCRNW = window.screen.width
   SCRNH = window.screen.height
-  TYPE  = chrome.runtime.sendMessage {greeting:"getTYPE"}, (response) -> TYPE  = response.TYPE
-  TYPE ?= "unchecked"
-  BASEW = chrome.runtime.sendMessage {greeting:"getBASEW"},(response) -> BASEW = parseInt(response.BASEW)
-  BASEH = chrome.runtime.sendMessage {greeting:"getBASEH"},(response) -> BASEH = parseInt(response.BASEH)
-  DUALW = chrome.runtime.sendMessage {greeting:"getDUALW"},(response) -> DUALW = parseInt(response.DUALW)
-  DUALH = chrome.runtime.sendMessage {greeting:"getDUALH"},(response) -> DUALH = parseInt(response.DUALH)
-  DUALX = chrome.runtime.sendMessage {greeting:"getDUALX"},(response) -> DUALX = parseInt(response.DUALX)
-  DUALY = chrome.runtime.sendMessage {greeting:"getDUALY"},(response) -> DUALY = parseInt(response.DUALY)
 
+  dualMode  = chrome.runtime.sendMessage {greeting:"checkDualMode"}, (response) -> dualMode  = response.dualMode
+  dualMode ?= "unchecked"
+
+  dualNums = chrome.runtime.sendMessage {greeting:"getDualNums"}, (response) -> dualNums = response.dualNums
+  dualNums ?= [SCRNW,SCRNH,0,0,0,0]
+  
   getCoordinates = (x, y, w, h) -> 
+
+    BASEW = parseInt(dualNums[0])
+    BASEH = parseInt(dualNums[1])
+    DUALW = parseInt(dualNums[2])
+    DUALH = parseInt(dualNums[3])
+    DUALX = parseInt(dualNums[4])
+    DUALY = parseInt(dualNums[5])
+
     C = []
     p = y + h
     r = DUALY + DUALH
@@ -23,7 +31,7 @@ Divebar = ->
     right  = (DUALX ==  BASEW)
     bottom = (DUALY == BASEH)
     
-    if (TYPE == "unchecked")
+    if (dualMode == "unchecked")
       if (t > SCRNW)
         C[0] = (t - SCRNW)
       else
@@ -38,7 +46,7 @@ Divebar = ->
         C[2] = (-x)
       else
         C[2] = 0
-    else if (TYPE == "checked")
+    else if (dualMode == "checked")
       if t > BASEW && (left || (p < BASEH && bottom))
         C[0] = t - BASEW
       else if  t > (BASEW + DUALW) && right
@@ -83,6 +91,7 @@ Divebar = ->
       DIV.css('padding-right',  padding[0] + "px")
       DIV.css('padding-bottom', padding[1] + "px")
       DIV.css('padding-left',   padding[2] + "px")
+      window.scrollBy(padding[2],0)
 
   setInterval ->
     if ( x != window.screenLeft || y != window.screenTop )
