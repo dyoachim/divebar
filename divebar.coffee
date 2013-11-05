@@ -1,44 +1,28 @@
 Divebar = ->
   window.chrome ?={}
   wrapped = false
-  x = 0
-  y = 0
-  
+
+  x = window.screenLeft
+  y = window.screenTop
   SCRNW = window.screen.width
   SCRNH = window.screen.height
 
   dualMode  = chrome.runtime.sendMessage {greeting:"checkDualMode"}, (response) -> dualMode  = response.dualMode
   dualMode ?= "unchecked"
-
   dualNums = chrome.runtime.sendMessage {greeting:"getDualNums"}, (response) -> dualNums = response.dualNums
   dualNums ?= [SCRNW,SCRNH,0,0,0,0]
   
   getCoordinates = (x, y, w, h) -> 
-
-    BASEW = parseInt(dualNums[0])
-    BASEH = parseInt(dualNums[1])
-    DUALW = parseInt(dualNums[2])
-    DUALH = parseInt(dualNums[3])
-    DUALX = parseInt(dualNums[4])
-    DUALY = parseInt(dualNums[5])
-
     C = []
-    p = y + h
-    r = DUALY + DUALH
-    t = x + w
-    u = DUALX + DUALW
-    left   = (DUALX == -DUALW)
-    right  = (DUALX ==  BASEW)
-    bottom = (DUALY == BASEH)
-    
+
     if (dualMode == "unchecked")
-      if (t > SCRNW)
-        C[0] = (t - SCRNW)
+      if x + w > SCRNW
+        C[0] = x + w - SCRNW
       else
         C[0] = 0
 
-      if (p > SCRNH)
-        C[1] = (p - SCRNH )
+      if y + h > SCRNH
+        C[1] = y + h - SCRNH
       else
         C[1] = 0
 
@@ -47,30 +31,53 @@ Divebar = ->
       else
         C[2] = 0
     else if (dualMode == "checked")
-      if t > BASEW && (left || (p < BASEH && bottom))
-        C[0] = t - BASEW
-      else if  t > (BASEW + DUALW) && right
-        C[0] = t - (BASEW + DUALW)
-      else if  y > BASEH && t > u && bottom
-        C[0] = t - u
+      BW = dualNums[0]
+      BH = dualNums[1]
+      DW = dualNums[2]
+      DH = dualNums[3]
+      DX = dualNums[4]
+      DY = dualNums[5]
+
+      Rbreach_RM  = (DX ==  BW) && (x + w > BW + DW)
+      Rbreach_BBM = (DY ==  BH) && (x + w > DX + DW) && (y > BH)
+      Rbreach_BDM = (DY ==  BH) && (x + w > BW)      && (y + h < BH)
+      Rbreach_LM  = (DX == -DW) && (x + w > BW)
+
+      Bbreach_RBM = (DX ==  BW) && (x > BW)     && (y + h > DY + DH)
+      Bbreach_RDM = (DX ==  BW) && (x + w < BW) && (y + h > BH)
+      Bbreach_BM  = (DY ==  BH) && (y + h > BH + DH)
+      Bbreach_LBM = (DX == -DW) && (x > 0)      && (y + h > BH)
+      Bbreach_LDM = (DX == -DW) && (x + w < 0)  && (y + h > DY + DH)
+      
+      Lbreach_RM  = (DX ==  BW) && (x <  0)
+      Lbreach_BBM = (DY ==  BH) && (x <  0) && (y + h < BH)
+      Lbreach_BDM = (DY ==  BH) && (x < DX) && (y > BH)
+      Lbreach_LM  = (DX == -DW) && (x < -DW)
+
+      if Rbreach_LM || Rbreach_BDM
+        C[0] = x + w - BW
+      else if Rbreach_RM
+        C[0] = x + w - BW - DW
+      else if Rbreach_BBM
+        C[0] = x + w - DX - DW
       else
         C[0] = 0
 
-      if  (p > BASEH) && ((x > 0 && left) || (t < BASEW && right))
-        C[1] = p - BASEH
-      else if (p > r) && ((t < 0 && left) || (x > BASEW && right))
-        C[1] = p - r
-      else if  p > (BASEH + DUALH) && bottom
-        C[1] = p - (BASEH + DUALH)
+      if Bbreach_LBM || Bbreach_RDM
+        C[1] = y + h - BH
+      else if Bbreach_LDM || Bbreach_RBM
+        C[1] = y + h - DY - DH
+      else if Bbreach_BM
+        C[1] = y + h - BH - DH
       else
         C[1] = 0
-        
-      if left && x < -DUALW
-        C[2] = -(x + DUALW)
-      else if (x < 0) && (right || (p < BASEH && bottom))
+
+      if Lbreach_LM
+        C[2] = -(x + DW)
+      else if Lbreach_RM || Lbreach_BBM
         C[2] = -x
-      else if  DUALX > x && y > BASEH  && bottom
-        C[2] = DUALX - x
+      else if  Lbreach_BDM
+        C[2] = DX - x
       else
         C[2] = 0
 

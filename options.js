@@ -61,25 +61,27 @@ document.querySelector('#calibrate_dual').addEventListener('click', calibrate_du
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    var a = localStorage.getItem('BASEW')
+    var a = parseInt(localStorage.getItem('BASEW'))
     if (a == null)
       a = window.screen.width
-    var b = localStorage.getItem('BASEH')
+    var b = parseInt(localStorage.getItem('BASEH'))
     if (b == null)
       b = window.screen.height
-    var c = localStorage.getItem('DUALW')
+    var c = parseInt(localStorage.getItem('DUALW'))
     if (c == null)
       c = 0
-    var d = localStorage.getItem('DUALH')
+    var d = parseInt(localStorage.getItem('DUALH'))
     if (d == null)
       d = 0
-    var e = localStorage.getItem('DUALX')
+    var e = parseInt(localStorage.getItem('DUALX'))
     if (e == null)
       e = 0
-    var f = localStorage.getItem('DUALY')
+    var f = parseInt(localStorage.getItem('DUALY'))
     if (f == null)
       f = 0
     var dualMode = localStorage.getItem('dualMode')
+    if (dualMode == null)
+      dualMode = "unchecked"
 
     console.log(sender.tab ?
       "from a content script:" + sender.tab.url : "from the extension");
