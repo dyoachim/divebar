@@ -43,7 +43,7 @@ function restore_settings(){
   var dualBox = document.getElementById('dualCheck')
   var divbox = document.getElementById("dualOptions")
 
-  if (localStorage.getItem("TYPE") == "checked") {
+  if (localStorage.getItem("dualMode") == "checked") {
     dualBox.checked = true;
     divbox.style.display = "";
   }
