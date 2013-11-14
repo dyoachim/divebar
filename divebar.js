@@ -31,6 +31,12 @@
     getCoordinates = function(x, y, w, h) {
       var BH, BW, Bbreach_BM, Bbreach_LBM, Bbreach_LDM, Bbreach_RBM, Bbreach_RDM, C, DH, DW, DX, DY, Lbreach_BBM, Lbreach_BDM, Lbreach_LM, Lbreach_RM, Rbreach_BBM, Rbreach_BDM, Rbreach_LM, Rbreach_RM;
       C = [];
+      BW = dualNums[0];
+      BH = dualNums[1];
+      DW = dualNums[2];
+      DH = dualNums[3];
+      DX = dualNums[4];
+      DY = dualNums[5];
       if (dualMode === "unchecked") {
         if (x + w > SCRNW) {
           C[0] = x + w - SCRNW;
@@ -48,12 +54,6 @@
           C[2] = 0;
         }
       } else if (dualMode === "checked") {
-        BW = dualNums[0];
-        BH = dualNums[1];
-        DW = dualNums[2];
-        DH = dualNums[3];
-        DX = dualNums[4];
-        DY = dualNums[5];
         Rbreach_RM = (DX === BW) && (x + w > BW + DW);
         Rbreach_BBM = (DY === BH) && (x + w > DX + DW) && (y > BH);
         Rbreach_BDM = (DY === BH) && (x + w > BW) && (y + h < BH);

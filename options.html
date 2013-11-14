@@ -11,14 +11,22 @@
 	<br>
 
 	<div id="dualOptions">
-		<p>Please fullscreen this window on the each monitor and press Calibrate.</p>
-		<br>
-		<div id="status_base"></div>
-		<div id="status_dual"></div>
-		<br>
-		<button id="calibrate_base">Calibrate Primary</button>
-		<br>
-		<button id="calibrate_dual">Calibrate Secondary</button>	
+		<center>
+			<p>Please fullscreen this window on the each monitor and press Calibrate.</p>
+			<br>
+			<button id="calibrateBase">Calibrate Primary</button>
+			<div id="baseScreenCalib"></div>
+			<br>
+			<button id="calibrateDual">Calibrate Secondary</button>
+			<div id="dualScreenCalib"></div>
+			<br>
+			<div id="statusBase"></div>
+			<div id="statusDual"></div>
+			<br>
+			<canvas id="screenCanvas" width="600" height="400" style="border:1px solid #c3c3c3;">
+				Your browser does not support the HTML5 canvas tag.
+			</canvas>
+		</center>
 	</div>
 </body>
 
