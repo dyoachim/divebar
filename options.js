@@ -71,12 +71,12 @@ function restoreSettings() {
 }
 
 function drawMonitors(){
-    var bw = parseInt(localStorage.getItem('BASEW'));
-    var bh = parseInt(localStorage.getItem('BASEH'));
-    var dx = parseInt(localStorage.getItem('DUALX'));
-    var dy = parseInt(localStorage.getItem('DUALY'));
-    var dw = parseInt(localStorage.getItem('DUALW'));
-    var dh = parseInt(localStorage.getItem('DUALH'));
+    var bw = parseInt(localStorage.getItem('BASEW') || 0);
+    var bh = parseInt(localStorage.getItem('BASEH') || 0);
+    var dx = parseInt(localStorage.getItem('DUALX') || 0);
+    var dy = parseInt(localStorage.getItem('DUALY') || 0);
+    var dw = parseInt(localStorage.getItem('DUALW') || 0);
+    var dh = parseInt(localStorage.getItem('DUALH') || 0);
 
     var baseStatus = document.getElementById("baseScreenCalib");
     baseStatus.innerHTML = "(0,0) W:" + bw + " H:" + bw;
