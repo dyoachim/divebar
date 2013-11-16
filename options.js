@@ -1,26 +1,17 @@
 function dualCheckOptions() {
     var dualBox = document.getElementById('dualCheck')
 
-    if (dualBox.checked) {
-        localStorage.setItem("dualMode", 'checked');
-    }
-    else {
-        localStorage.setItem("dualMode", 'unchecked');
-    }
+    if (dualBox.checked) localStorage.setItem("dualMode", 'checked');
+    else localStorage.setItem("dualMode", 'unchecked');
 }
 
 function showDualOptions() {
     var chkbox = document.getElementById("dualCheck")
     var divbox = document.getElementById("dualOptions")
 
-    if (chkbox.checked === true) {
-        divbox.style.display = "";
-    }
-    else {
-        divbox.style.display = "none";
-    }
+    if (chkbox.checked === true) divbox.style.display = "";
+    else divbox.style.display = "none";
 }
-
 
 function calibrateBaseOptions() {
     var w = window.screen.width
@@ -82,49 +73,185 @@ function drawMonitors(){
     baseStatus.innerHTML = "(0,0) W:" + bw + " H:" + bw;
 
     var dualStatus = document.getElementById("dualScreenCalib");
-    dualStatus.innerHTML = "("+ dx + "," + dy +")" + "W:"+ dw + " H:" + dh;
+    dualStatus.innerHTML = "("+ dx + "," + dy +") " + "W:"+ dw + " H:" + dh;
 
     var c = document.getElementById("screenCanvas");
     var ctx = c.getContext("2d");
     ctx.clearRect(0, 0, 6000, 4000);
 
-    //Base
-    ctx.fillStyle="#FF0000";
+   //monitors
+    ctx.lineWidth = 1;
+    ctx.fillStyle="#00FFFF";
+    if (dx < 0) {
+        if (dy < 0) ctx.fillRect(-dx,-dy,bw,bh);
+        else ctx.fillRect(-dx,0,bw,bh);
+    }
+    else {
+        if (dy < 0) ctx.fillRect(0,-dy,bw,bh);
+        else ctx.fillRect(0,0,bw,bh);                
+    }
+    ctx.fillStyle="#33CCCC";
+    if (dx < 0) {
+        if (dy < 0) ctx.fillRect(0,0,dw,dh);
+        else ctx.fillRect(0,dy,dw,dh);
+    }
+    else {
+        if (dy < 0) ctx.fillRect(dx,0,dw,dh);
+        else ctx.fillRect(dx,dy,dw,dh);
+    }
+    //boundaries 
+    ctx.lineWidth = 80;
+    ctx.beginPath();
+    ctx.strokeStyle = '#00CC00';
     if (dx < 0) {
         if (dy < 0) {
-            ctx.fillRect(-dx,-dy,bw,bh);
+            ctx.moveTo((-dx) + bw - 40, -dy);
+            ctx.lineTo((-dx) + bw - 40, bh + (-dy));
+            ctx.moveTo(dw, (-dy) + bh -40);
+            ctx.lineTo(((-dx) + bw), (-dy) + bh - 40);
         }
         else {
-            ctx.fillRect(-dx,0,bw,bh);
+            ctx.moveTo((-dx) + bw - 40,0)
+            ctx.lineTo((-dx) + bw - 40,bh)
+            if (dy === bh) {
+                ctx.moveTo((-dx) + 40,0);
+                ctx.lineTo((-dx) + 40,bh);
+            }
+            else {
+                ctx.moveTo((-dx),bh-40)
+                ctx.lineTo((-dx) + bw,bh-40)
+            }
         }
     }
     else {
         if (dy < 0) {
-            ctx.fillRect(0,-dy,bw,bh);
-        }
+            ctx.moveTo(0 + 40,-dy);
+            ctx.lineTo(0 + 40,bh+(-dy));
+            ctx.moveTo(0,(-dy) + bh - 40);
+            ctx.lineTo(bw,(-dy) + bh - 40);
+            }
         else {
-            ctx.fillRect(0,0,bw,bh);
-        }      
+            ctx.moveTo(0+40, 0);
+            ctx.lineTo(0+40, bh);
+            if (dy === bh) {
+                ctx.moveTo(bw - 40, 0);
+                ctx.lineTo(bw - 40, bh);
+            }
+            else {
+                ctx.moveTo(0, bh - 40);
+                ctx.lineTo(bw, bh - 40);
+            }
+        }
     }
+    ctx.stroke();
 
-    //Dual
-    ctx.fillStyle="#0000FF";
+    ctx.beginPath();
+    ctx.strokeStyle = '#00FF00';
     if (dx < 0) {
         if (dy < 0) {
-            ctx.fillRect(0,0,dw,dh);
+            ctx.moveTo(0 + 40, 0);
+            ctx.lineTo(0 + 40, dh);
+            ctx.moveTo(0, dh - 40);
+            ctx.lineTo(dw, dh - 40);
         }
         else {
-            ctx.fillRect(0,dy,dw,dh);
+            ctx.moveTo(0 + 40,dy);
+            ctx.lineTo(0 + 40,dh+dy);
+            ctx.moveTo(0,dh + dy - 40);
+            ctx.lineTo(dw,dh + dy - 40);
+            if (dy === bh) {
+                ctx.moveTo(dw - 40,dy);
+                ctx.lineTo(dw - 40,dy+dh);
+            }
         }
     }
     else {
         if (dy < 0) {
-            ctx.fillRect(dx,0,dw,dh);
+            ctx.moveTo(dx + dw - 40,0);
+            ctx.lineTo(dx + dw - 40,dh);
+            ctx.moveTo(dx,dh - 40);
+            ctx.lineTo(dx + dw,dh - 40);
         }
         else {
-            ctx.fillRect(dx,dy,dw,dh);
+            ctx.moveTo(dx + dw - 40,dy);
+            ctx.lineTo(dx + dw - 40,dy + dh);
+            ctx.moveTo(dx,dy + dh - 40);
+            ctx.lineTo(dx + dw,dy + dh - 40);
+            if (dy === bh) {
+                ctx.moveTo(dx + 40, dy);
+                ctx.lineTo(dx + 40, dy + dh);
+            }
         }
     }
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.strokeStyle = '#990000';
+    if (dx < 0) {
+        if (dy < 0) {
+            ctx.moveTo(-dx + 40, -dy);
+            ctx.lineTo(-dx + 40, dh);
+        }
+        else {
+            if (dy === bh) {
+                ctx.moveTo((-dx),bh-40)
+                ctx.lineTo((-dx) + bw,bh-40)
+            }
+            else {
+                ctx.moveTo((-dx) + 40,0);
+                ctx.lineTo((-dx) + 40,bh);
+            }
+        }
+    }
+    else {
+        if (dy < 0) {
+            ctx.moveTo(bw - 40,-dy);
+            ctx.lineTo(bw - 40,(-dy)+bh);
+            }
+        else {
+            if (dy === bh) {
+                ctx.moveTo(0, bh - 40);
+                ctx.lineTo(bw, bh - 40);
+            }
+            else {
+                ctx.moveTo(bw - 40, 0);
+                ctx.lineTo(bw - 40, bh);
+            }
+        }
+    }
+    if (dx < 0) {
+        if (dy < 0) {
+            ctx.moveTo((-dx) - 40, -dy);
+            ctx.lineTo(dw - 40, dh);
+        }
+        else {
+            if(dy === bh) {
+                ctx.moveTo(0,dy);
+                ctx.lineTo(dw,dy);
+            }
+            else{
+                ctx.moveTo(dw - 40,dy)
+                ctx.lineTo(dw - 40,dy+dh)
+            }
+        }
+    }
+    else {
+        if (dy < 0) {
+            ctx.moveTo(dx + 40, 0);
+            ctx.lineTo(dx + 40, dh);
+        }
+        else {
+            if (dy === bh) {
+                ctx.moveTo(dx,dy)
+                ctx.lineTo(dx + dw,dy)
+            }
+            else {
+                ctx.moveTo(dx + 40, dy);
+                ctx.lineTo(dx + 40, dy + dh);
+            }
+        }
+    }
+    ctx.stroke();
 }
 
 document.addEventListener('DOMContentLoaded', restoreSettings);
@@ -145,10 +272,6 @@ chrome.runtime.onMessage.addListener(
 
         console.log(sender.tab ?
             "from a content script:" + sender.tab.url : "from the extension");
-        if (request.greeting === "getDualNums") {
-            sendResponse({dualNums: [a,b,c,d,e,f]});
-        }
-        if (request.greeting === "checkDualMode"){
-            sendResponse({dualMode: dualMode});
-        }
+        if (request.greeting === "getDualNums") sendResponse({dualNums: [a,b,c,d,e,f]});
+        if (request.greeting === "checkDualMode") sendResponse({dualMode: dualMode});
     });
