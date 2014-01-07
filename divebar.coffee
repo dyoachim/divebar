@@ -86,21 +86,23 @@ Divebar = ->
         return C
 
     appendPadding = (padding) ->
+        hitSite = $('html')
+        hitBody = $('body')
+
         if (padding[0] == 0 && padding[1] == 0 && padding[2] == 0)
-            if (wrapped == true)
-                $("#dive-div").unwrap()
-                $("#dive-div > *").unwrap()
-                wrapped = false
+            hitSite.css('-webkit-transform', "translateX(0px)" + " translateY(0px)")
+            hitSite.css('direction', 'ltr')
+            hitBody.css('direction', '')
         else
-            if (wrapped == false)
-                $('body > *').wrapAll("<div id='dive-div' style='position:relative' />")
-                $('#dive-div').wrapAll("<div id='dive-div2' style='position:relative; width:100%' />")
-                wrapped = true
-            DIV = $('#dive-div2')
-            DIV.css('padding-right',  padding[0] + "px")
-            DIV.css('padding-bottom', padding[1] + "px")
-            DIV.css('padding-left',   padding[2] + "px")
-            window.scrollBy(padding[2],0)
+            hitSite.css('-webkit-transform', "translateX(" + (padding[2]-padding[0]) + "px)")
+            if (padding[2]-padding[0]) < 0
+                hitSite.css('direction', 'rtl')
+                hitBody.css('direction', 'ltr')
+                window.scrollBy(-padding[0])
+
+
+        if (padding[2] - padding[0] > 0)            
+            window.scrollBy(padding[2])
 
     setInterval ->
         if (x != window.screenLeft || y != window.screenTop)
