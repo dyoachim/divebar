@@ -3,11 +3,10 @@
   var Divebar;
 
   Divebar = function() {
-    var SCRNH, SCRNW, appendPadding, dualMode, dualNums, getCoordinates, wrapped, x, y;
+    var SCRNH, SCRNW, appendPadding, dualMode, dualNums, getCoordinates, x, y;
     if (window.chrome == null) {
       window.chrome = {};
     }
-    wrapped = false;
     x = window.screenLeft;
     y = window.screenTop;
     SCRNW = window.screen.width;
@@ -29,7 +28,7 @@
       dualNums = [SCRNW, SCRNH, 0, 0, 0, 0];
     }
     getCoordinates = function(x, y, w, h) {
-      var BH, BW, Bbreach_BM, Bbreach_LBM, Bbreach_LDM, Bbreach_RBM, Bbreach_RDM, C, DH, DW, DX, DY, Lbreach_BBM, Lbreach_BDM, Lbreach_LM, Lbreach_RM, Rbreach_BBM, Rbreach_BDM, Rbreach_LM, Rbreach_RM;
+      var BH, BW, Bbreach, Bbreach_BM, Bbreach_LBM, Bbreach_LDM, Bbreach_RBM, Bbreach_RDM, C, DH, DW, DX, DY, Lbreach, Lbreach_BBM, Lbreach_BDM, Lbreach_LM, Lbreach_RM, Rbreach, Rbreach_BBM, Rbreach_BDM, Rbreach_LM, Rbreach_RM;
       C = [];
       BW = dualNums[0];
       BH = dualNums[1];
@@ -38,17 +37,20 @@
       DX = dualNums[4];
       DY = dualNums[5];
       if (dualMode === "unchecked") {
-        if (x + w > SCRNW) {
+        Rbreach = x + w > SCRNW;
+        Bbreach = y + h > SCRNH;
+        Lbreach = x < 0;
+        if (Rbreach) {
           C[0] = x + w - SCRNW;
         } else {
           C[0] = 0;
         }
-        if (y + h > SCRNH) {
+        if (Bbreach) {
           C[1] = y + h - SCRNH;
         } else {
           C[1] = 0;
         }
-        if (x < 0) {
+        if (Lbreach) {
           C[2] = -x;
         } else {
           C[2] = 0;
@@ -97,25 +99,25 @@
       }
       return C;
     };
-    appendPadding = function(padding) {
-      var DIV;
-      if (padding[0] === 0 && padding[1] === 0 && padding[2] === 0) {
-        if (wrapped === true) {
-          $("#dive-div").unwrap();
-          $("#dive-div > *").unwrap();
-          return wrapped = false;
-        }
+    appendPadding = function(coordinates) {
+      var allCheck, hitBody, hitSite;
+      hitSite = $('html');
+      hitBody = $('body');
+      allCheck = $('*');
+      if (coordinates[0] === 0 && coordinates[1] === 0 && coordinates[2] === 0) {
+        hitSite.css('-webkit-transform', "translateX(0px)" + " translateY(0px)");
+        hitSite.css('direction', 'ltr');
+        hitBody.css('direction', '');
       } else {
-        if (wrapped === false) {
-          $('body > *').wrapAll("<div id='dive-div' style='position:relative' />");
-          $('#dive-div').wrapAll("<div id='dive-div2' style='position:relative; width:100%' />");
-          wrapped = true;
+        hitSite.css('-webkit-transform', "translateX(" + (coordinates[2] - coordinates[0]) + "px)");
+        if ((coordinates[2] - coordinates[0]) < 0) {
+          hitSite.css('direction', 'rtl');
+          hitBody.css('direction', 'ltr');
+          window.scrollBy(-coordinates[0]);
         }
-        DIV = $('#dive-div2');
-        DIV.css('padding-right', padding[0] + "px");
-        DIV.css('padding-bottom', padding[1] + "px");
-        DIV.css('padding-left', padding[2] + "px");
-        return window.scrollBy(padding[2], 0);
+      }
+      if (coordinates[2] - coordinates[0] > 0) {
+        return window.scrollBy(coordinates[2]);
       }
     };
     return setInterval(function() {

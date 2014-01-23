@@ -1,7 +1,6 @@
 Divebar = ->
     window.chrome ?={}
   
-    wrapped = false
     x = window.screenLeft
     y = window.screenTop
     SCRNW = window.screen.width
@@ -25,17 +24,21 @@ Divebar = ->
         DY = dualNums[5]
 
         if (dualMode == "unchecked")
-            if (x + w > SCRNW)
+            Rbreach = (x + w > SCRNW)
+            Bbreach = (y + h > SCRNH)
+            Lbreach = (x < 0)
+
+            if Rbreach
                 C[0] = x + w - SCRNW
             else
                 C[0] = 0
 
-            if (y + h > SCRNH)
+            if Bbreach
                 C[1] = y + h - SCRNH
             else
                 C[1] = 0
 
-            if (x < 0)
+            if Lbreach
                 C[2] = (-x)
             else
                 C[2] = 0
@@ -85,22 +88,24 @@ Divebar = ->
                 C[2] = 0
         return C
 
-    appendPadding = (padding) ->
-        if (padding[0] == 0 && padding[1] == 0 && padding[2] == 0)
-            if (wrapped == true)
-                $("#dive-div").unwrap()
-                $("#dive-div > *").unwrap()
-                wrapped = false
+    appendPadding = (coordinates) ->
+        hitSite = $('html')
+        hitBody = $('body')
+        allCheck = $('*')
+
+        if (coordinates[0] == 0 && coordinates[1] == 0 && coordinates[2] == 0)
+            hitSite.css('-webkit-transform', "translateX(0px)" + " translateY(0px)")
+            hitSite.css('direction', 'ltr')
+            hitBody.css('direction', '')
         else
-            if (wrapped == false)
-                $('body > *').wrapAll("<div id='dive-div' style='position:relative' />")
-                $('#dive-div').wrapAll("<div id='dive-div2' style='position:relative; width:100%' />")
-                wrapped = true
-            DIV = $('#dive-div2')
-            DIV.css('padding-right',  padding[0] + "px")
-            DIV.css('padding-bottom', padding[1] + "px")
-            DIV.css('padding-left',   padding[2] + "px")
-            window.scrollBy(padding[2],0)
+            hitSite.css('-webkit-transform', "translateX(" + (coordinates[2]-coordinates[0]) + "px)")
+            if (coordinates[2]-coordinates[0]) < 0
+                hitSite.css('direction', 'rtl')
+                hitBody.css('direction', 'ltr')
+                window.scrollBy(-coordinates[0])
+
+        if (coordinates[2] - coordinates[0] > 0)            
+            window.scrollBy(coordinates[2])
 
     setInterval ->
         if (x != window.screenLeft || y != window.screenTop)
