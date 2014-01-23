@@ -91,7 +91,6 @@ Divebar = ->
     appendPadding = (coordinates) ->
         hitSite = $('html')
         hitBody = $('body')
-        allCheck = $('*')
 
         if (coordinates[0] == 0 && coordinates[1] == 0 && coordinates[2] == 0)
             hitSite.css('-webkit-transform', "translateX(0px)" + " translateY(0px)")
