@@ -266,6 +266,6 @@ chrome.runtime.onMessage.addListener(
 
         console.log(sender.tab ?
             "from a content script:" + sender.tab.url : "from the extension");
-        if (request.greeting === "getDualNums") sendResponse({dualNums: [a,b,c,d,e,f],dualMode: dualMode});
+        if (request.greeting === "checkMode") sendResponse({dualNums: [a,b,c,d,e,f],dualMode: dualMode});
         
     });
