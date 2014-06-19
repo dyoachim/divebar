@@ -64,7 +64,7 @@ function drawMonitors(){
   var dh = parseInt(localStorage.getItem('DUALH'),10) || 0;
 
   var baseStatus = document.getElementById("baseScreenCalib");
-  baseStatus.innerHTML = "(0,0) W:" + bw + " H:" + bw;
+  baseStatus.innerHTML = "(0,0) W:" + bw + " H:" + bh;
 
   var dualStatus = document.getElementById("dualScreenCalib");
   dualStatus.innerHTML = "("+ dx + "," + dy +") " + "W:"+ dw + " H:" + dh;
@@ -93,7 +93,7 @@ function drawMonitors(){
     if (dy < 0) ctx.fillRect(dx,0,dw,dh);
     else ctx.fillRect(dx,dy,dw,dh);
   }
-  //boundaries 
+  //boundaries
   ctx.lineWidth = 80;
   ctx.beginPath();
   ctx.strokeStyle = '#00CC00';
@@ -267,5 +267,5 @@ chrome.runtime.onMessage.addListener(
         console.log(sender.tab ?
             "from a content script:" + sender.tab.url : "from the extension");
         if (request.greeting === "checkMode") sendResponse({dualNums: [a,b,c,d,e,f],dualMode: dualMode});
-        
+
     });

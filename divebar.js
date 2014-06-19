@@ -14,14 +14,16 @@
     chrome.runtime.sendMessage({
       greeting: "checkMode"
     }, function(response) {
-      dualMode = response.dualMode;
-      dualNums = response.dualNums;
+      if (response) {
+        dualMode = response.dualMode;
+        dualNums = response.dualNums;
+      }
+      else {
+        dualMode = "unchecked";
+        dualNums = [SCRNW, SCRNH, 0, 0, 0, 0];
+      }
+
     });
-    
-    if (dualMode == null) { dualMode = "unchecked"; }
-
-    if (dualNums == null) { dualNums = [SCRNW, SCRNH, 0, 0, 0, 0]; }
-
 
     function getCoordinates(x, y, w, h) {
       var C = [];
@@ -121,9 +123,11 @@
       if (coordinates[0] === 0 && coordinates[1] === 0 && coordinates[2] === 0) {
         hitSite.css('-webkit-transform', "");
         $('*').css('direction', 'ltr');
+        hitSite.css('margin-bottom', "0");
       }
       else {
         hitSite.css('-webkit-transform',"translateX(" + (coordinates[2] - coordinates[0]) + "px)");
+        hitSite.css('margin-bottom', coordinates[1] + "px");
         if ((coordinates[2] - coordinates[0]) < 0) {
           hitSite.css('direction', 'rtl');
           document.body.direction = 'ltr';
@@ -154,7 +158,6 @@
         return leftElements;
       }
     }
-
 
     return setInterval(function() {
       if (x !== window.screenLeft || y !== window.screenTop) {
